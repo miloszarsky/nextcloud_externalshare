@@ -161,7 +161,12 @@
      */
     function watchShareButtons() {
         document.addEventListener('click', function(e) {
-            const target = e.target.closest('.icon-share, .action-share, [data-action="Share"], .icon-shared, .sharing-entry, [class*="share"]');
+            // Ignore clicks inside our own section
+            if (e.target.closest('.external-share-section')) {
+                return;
+            }
+
+            const target = e.target.closest('.icon-share, .action-share, [data-action="Share"], .icon-shared, .sharing-entry');
 
             if (target && !isProcessing) {
                 isProcessing = true;
