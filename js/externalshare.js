@@ -409,12 +409,18 @@
         // Create email form (initially hidden)
         const emailForm = createEmailForm(data.shareLink, fileName);
 
+        // Create "Upload Another" button
+        const uploadAnotherBtn = document.createElement('button');
+        uploadAnotherBtn.className = 'upload-another-btn';
+        uploadAnotherBtn.textContent = '🔄 Upload Another File';
+
         // Assemble success container
         successContainer.appendChild(successHeader);
         successContainer.appendChild(linkLabel);
         successContainer.appendChild(linkInput);
         successContainer.appendChild(buttonContainer);
         successContainer.appendChild(emailForm);
+        successContainer.appendChild(uploadAnotherBtn);
 
         resultDiv.appendChild(successContainer);
 
@@ -454,6 +460,15 @@
             if (emailForm.style.display === 'block') {
                 emailForm.querySelector('.email-recipient-input').focus();
             }
+        });
+
+        // Upload Another button handler - reset the section
+        uploadAnotherBtn.addEventListener('click', function() {
+            resultDiv.textContent = '';
+            button.style.display = '';
+            button.disabled = false;
+            button.textContent = '🚀 Upload to External Service';
+            button.style.opacity = '1';
         });
     }
 

@@ -97,7 +97,6 @@
 }
 
 .copy-link-btn {
-    width: 100%;
     padding: 10px 12px;
     background: rgba(0, 0, 0, 0.2);
     color: var(--color-primary-text);
@@ -115,6 +114,11 @@
 
 .copy-link-btn:disabled {
     opacity: 0.8;
+}
+
+/* Single copy button (when not in flex container) */
+.external-share-result > .external-share-success > .copy-link-btn:only-of-type {
+    width: 100%;
 }
 
 /* Icon */
@@ -233,9 +237,8 @@
     color: var(--color-main-text);
 }
 
-.dialog-copy-btn {
-    width: 100%;
-    margin-top: 8px;
+.dialog-copy-btn,
+.dialog-email-btn {
     padding: 8px;
     background: rgba(0, 0, 0, 0.2);
     color: var(--color-primary-text);
@@ -246,30 +249,39 @@
     transition: background 0.2s ease;
 }
 
-.dialog-copy-btn:hover:not(:disabled) {
+.dialog-copy-btn:hover:not(:disabled),
+.dialog-email-btn:hover:not(:disabled) {
     background: rgba(0, 0, 0, 0.3);
 }
 
-.dialog-copy-btn:disabled {
+.dialog-copy-btn:disabled,
+.dialog-email-btn:disabled {
     opacity: 0.8;
 }
 
-/* Button containers */
-.external-share-buttons,
 .dialog-button-container {
     display: flex;
     gap: 8px;
     margin-top: 8px;
 }
 
-.external-share-buttons button,
 .dialog-button-container button {
     flex: 1;
 }
 
-/* Email button */
-.email-link-btn,
-.dialog-email-btn {
+/* Button containers */
+.external-share-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.external-share-buttons button {
+    flex: 1;
+}
+
+/* Email button in sidebar */
+.email-link-btn {
     padding: 10px 12px;
     background: rgba(0, 0, 0, 0.2);
     color: var(--color-primary-text);
@@ -281,8 +293,7 @@
     transition: background 0.2s ease;
 }
 
-.email-link-btn:hover:not(:disabled),
-.dialog-email-btn:hover:not(:disabled) {
+.email-link-btn:hover:not(:disabled) {
     background: rgba(0, 0, 0, 0.3);
 }
 
@@ -372,4 +383,23 @@
 .email-status.error {
     background: var(--color-error);
     color: var(--color-primary-text);
+}
+
+/* Upload Another button */
+.upload-another-btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 8px 12px;
+    background: transparent;
+    color: var(--color-primary-text);
+    border: 1px dashed rgba(255, 255, 255, 0.5);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.upload-another-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.8);
 }
