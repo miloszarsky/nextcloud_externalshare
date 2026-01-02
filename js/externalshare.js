@@ -90,9 +90,18 @@
 
         // Check if we already have a section
         const existingSection = contentArea.querySelector('.external-share-section');
+
+        console.log('[ExternalShare] attemptInjection:', {
+            existingSection: !!existingSection,
+            sectionExists,
+            isUploading,
+            currentFileName
+        });
+
         if (existingSection) {
             // Check if file changed - if so, remove old section and re-inject
             const existingFileName = existingSection.querySelector('.external-share-upload, button[data-file-name]')?.getAttribute('data-file-name');
+            console.log('[ExternalShare] existingFileName:', existingFileName);
 
             if (existingFileName && currentFileName && existingFileName !== currentFileName) {
                 console.log('[ExternalShare] File changed from', existingFileName, 'to', currentFileName);
@@ -101,12 +110,18 @@
                 isUploading = false;  // Reset upload state for new file
             } else if (sectionExists || isUploading) {
                 // Same file, section exists or upload in progress - don't re-inject
+                console.log('[ExternalShare] Skipping injection - section exists or uploading');
                 return true;
             }
         } else if (sectionExists || isUploading) {
-            // No section but flags say we have one - reset flags
+            // No section in DOM but flags say we should have one
+            console.log('[ExternalShare] No section in DOM but flags set - checking if upload in progress');
+            if (isUploading) {
+                // Upload in progress, don't create new section
+                console.log('[ExternalShare] Upload in progress, not injecting');
+                return true;
+            }
             sectionExists = false;
-            // Don't reset isUploading here, only on file change
         }
 
         if (!currentFileName) {
