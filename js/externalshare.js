@@ -522,9 +522,10 @@
 
         const fileName = button.getAttribute('data-file-name');
 
-        // Mark success and store data for potential re-creation
+        // Mark success and store data for potential re-creation - do this FIRST
         successShown = true;
         lastSuccessData = { ...data, fileName };
+        console.log('[ExternalShare] Set successShown = true, lastSuccessData:', lastSuccessData);
 
         // Try to find resultDiv from button, or find section in DOM
         let resultDiv = button.parentElement?.querySelector('.external-share-result');
@@ -551,6 +552,8 @@
                     return;
                 } else {
                     console.error('[ExternalShare] Cannot find contentArea');
+                    successShown = false;
+                    lastSuccessData = null;
                     isUploading = false;
                     return;
                 }
@@ -560,6 +563,8 @@
 
         if (!resultDiv) {
             console.error('[ExternalShare] resultDiv not found!');
+            successShown = false;
+            lastSuccessData = null;
             isUploading = false;
             return;
         }
