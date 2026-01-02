@@ -9,7 +9,7 @@
 
     let isProcessing = false;
     let sectionExists = false;
-    let uploadSucceeded = false;  // Prevents re-injection after success
+    let isUploading = false;      // Prevents re-injection during upload
     let storedFileContext = null;
 
     // Wait for page load
@@ -39,8 +39,8 @@
 
         // Set up MutationObserver for Vue updates
         const observer = new MutationObserver(function(mutations) {
-            // Don't re-inject if upload already succeeded or section exists
-            if (isProcessing || sectionExists || uploadSucceeded) return;
+            // Don't re-inject if upload in progress or section exists
+            if (isProcessing || sectionExists || isUploading) return;
 
             for (const mutation of mutations) {
                 if (mutation.addedNodes.length || mutation.attributeName === 'class') {
@@ -134,7 +134,7 @@
             if (target && !isProcessing) {
                 isProcessing = true;
                 sectionExists = false;
-                uploadSucceeded = false;  // Reset on new file selection
+                isUploading = false;  // Reset on new file selection
                 storeFileContextFromClick(target);
 
                 // Remove existing section so it can be re-created with new file info
@@ -318,6 +318,9 @@
             return;
         }
 
+        // Prevent re-injection during upload
+        isUploading = true;
+
         const originalText = button.textContent;
         button.disabled = true;
         button.textContent = '⏳ Uploading...';
@@ -354,12 +357,14 @@
                 const errorMessage = data.message || 'Unknown error occurred';
                 console.error('[ExternalShare] Upload failed:', errorMessage);
                 showAlert('Upload failed: ' + errorMessage);
+                isUploading = false;  // Reset on failure
                 resetButton(button, originalText);
             }
         })
         .catch(error => {
             console.error('[ExternalShare] Error:', error);
             showAlert('Network error occurred. Please try again.');
+            isUploading = false;  // Reset on error
             resetButton(button, originalText);
         });
     }
@@ -374,15 +379,15 @@
      * Show success message with share link (XSS-safe DOM manipulation)
      */
     function showSuccess(button, data) {
-        // Mark upload as succeeded to prevent re-injection
-        uploadSucceeded = true;
-        console.log('[ExternalShare] showSuccess called, uploadSucceeded =', uploadSucceeded);
+        // isUploading stays true to prevent re-injection
+        console.log('[ExternalShare] showSuccess called, isUploading =', isUploading);
 
         const resultDiv = button.parentElement.querySelector('.external-share-result');
         const fileName = button.getAttribute('data-file-name');
 
         if (!resultDiv) {
-            console.error('[ExternalShare] resultDiv not found!');
+            console.error('[ExternalShare] resultDiv not found! Button parent:', button.parentElement);
+            isUploading = false;
             return;
         }
 
@@ -489,7 +494,7 @@
 
         // Upload Another button handler - reset the section
         uploadAnotherBtn.addEventListener('click', function() {
-            uploadSucceeded = false;  // Allow new upload
+            isUploading = false;  // Allow new upload
             resultDiv.textContent = '';
             button.style.display = '';
             button.disabled = false;
@@ -820,9 +825,10 @@
         reset: () => {
             sectionExists = false;
             isProcessing = false;
-            uploadSucceeded = false;
+            isUploading = false;
             storedFileContext = null;
             document.querySelectorAll('.external-share-section').forEach(el => el.remove());
+            console.log('[ExternalShare] Reset complete');
         }
     };
 
