@@ -336,17 +336,26 @@
         formData.append('filePath', filePath);
 
         const uploadUrl = OC.generateUrl('/apps/externalshare/upload');
-        console.log('[ExternalShare] Calling API:', uploadUrl);
+        console.log('[ExternalShare] Calling API:', uploadUrl, 'Token:', OC.requestToken ? 'present' : 'missing');
 
         fetch(uploadUrl, {
             method: 'POST',
-            headers: { 'requesttoken': OC.requestToken },
+            headers: {
+                'requesttoken': OC.requestToken,
+                'OCS-APIREQUEST': 'true'
+            },
             body: formData
         })
         .then(response => {
             console.log('[ExternalShare] Response status:', response.status);
             if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
+                // Try to get error details
+                return response.json().then(data => {
+                    console.error('[ExternalShare] Server error:', data);
+                    throw new Error(data.message || `HTTP ${response.status}`);
+                }).catch(() => {
+                    throw new Error(`HTTP ${response.status}`);
+                });
             }
             return response.json();
         })
