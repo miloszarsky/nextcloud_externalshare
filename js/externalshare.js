@@ -224,10 +224,13 @@
 
         // Bind event handler
         button.addEventListener('click', function(e) {
+            console.log('[ExternalShare] Upload button clicked');
             e.preventDefault();
             e.stopPropagation();
             handleUpload(button);
         });
+
+        console.log('[ExternalShare] Section injected for file:', fileName, 'path:', filePath);
     }
 
     function getFileName() {
@@ -304,7 +307,10 @@
         const filePath = button.getAttribute('data-file-path');
         const fileName = button.getAttribute('data-file-name');
 
+        console.log('[ExternalShare] handleUpload called', { filePath, fileName });
+
         if (!filePath || !fileName) {
+            console.error('[ExternalShare] Missing filePath or fileName');
             showAlert('Could not determine which file to upload. Please try again.');
             return;
         }
@@ -317,18 +323,23 @@
         const formData = new FormData();
         formData.append('filePath', filePath);
 
-        fetch(OC.generateUrl('/apps/externalshare/upload'), {
+        const uploadUrl = OC.generateUrl('/apps/externalshare/upload');
+        console.log('[ExternalShare] Calling API:', uploadUrl);
+
+        fetch(uploadUrl, {
             method: 'POST',
             headers: { 'requesttoken': OC.requestToken },
             body: formData
         })
         .then(response => {
+            console.log('[ExternalShare] Response status:', response.status);
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
+            console.log('[ExternalShare] Response data:', data);
             // Validate response structure
             if (!data || typeof data !== 'object') {
                 throw new Error('Invalid response format');
@@ -338,11 +349,13 @@
                 showSuccess(button, data);
             } else {
                 const errorMessage = data.message || 'Unknown error occurred';
+                console.error('[ExternalShare] Upload failed:', errorMessage);
                 showAlert('Upload failed: ' + errorMessage);
                 resetButton(button, originalText);
             }
         })
         .catch(error => {
+            console.error('[ExternalShare] Error:', error);
             showAlert('Network error occurred. Please try again.');
             resetButton(button, originalText);
         });
