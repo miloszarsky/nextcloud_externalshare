@@ -1,0 +1,43 @@
+name: Build Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get app version
+        id: version
+        run: |
+          VERSION=$(grep -oP '(?<=<version>)[^<]+' appinfo/info.xml)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create release package
+        run: |
+          # Create temporary directory
+          mkdir -p build/externalshare
+
+          # Copy files excluding unwanted directories/files
+          rsync -av --exclude='.git' \
+                    --exclude='.github' \
+                    --exclude='.claude' \
+                    --exclude='README.md' \
+                    --exclude='build' \
+                    ./ build/externalshare/
+
+          # Create zip file
+          cd build
+          zip -r externalshare-${{ steps.version.outputs.version }}.zip externalshare
+
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/externalshare-${{ steps.version.outputs.version }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
