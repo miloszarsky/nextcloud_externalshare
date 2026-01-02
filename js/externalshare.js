@@ -406,22 +406,160 @@
     }
 
     /**
+     * Create a complete success section (when original was removed by Vue)
+     */
+    function createSuccessSection(fileName, data) {
+        const section = document.createElement('div');
+        section.className = 'external-share-section';
+
+        // Create header
+        const header = document.createElement('div');
+        header.className = 'external-share-header';
+
+        const heading = document.createElement('h3');
+        const icon = document.createElement('span');
+        icon.textContent = '📤';
+        icon.style.marginRight = '8px';
+        heading.appendChild(icon);
+        heading.appendChild(document.createTextNode('External Share'));
+        header.appendChild(heading);
+
+        // Create success container
+        const successContainer = document.createElement('div');
+        successContainer.className = 'external-share-success';
+
+        const successHeader = document.createElement('h4');
+        const checkmark = document.createElement('span');
+        checkmark.textContent = '✅';
+        successHeader.appendChild(checkmark);
+        successHeader.appendChild(document.createTextNode(' Upload Successful!'));
+
+        const linkLabel = document.createElement('label');
+        linkLabel.textContent = 'Share Link:';
+
+        const linkInput = document.createElement('input');
+        linkInput.type = 'text';
+        linkInput.value = data.shareLink;
+        linkInput.readOnly = true;
+        linkInput.className = 'external-share-link-input';
+
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = 'external-share-buttons';
+
+        const copyButton = document.createElement('button');
+        copyButton.className = 'copy-link-btn';
+        copyButton.textContent = '📋 Copy to Clipboard';
+
+        const emailButton = document.createElement('button');
+        emailButton.className = 'email-link-btn';
+        emailButton.textContent = '📧 Send by Email';
+
+        buttonContainer.appendChild(copyButton);
+        buttonContainer.appendChild(emailButton);
+
+        const emailForm = createEmailForm(data.shareLink, fileName);
+
+        const uploadAnotherBtn = document.createElement('button');
+        uploadAnotherBtn.className = 'upload-another-btn';
+        uploadAnotherBtn.textContent = '🔄 Upload Another File';
+
+        successContainer.appendChild(successHeader);
+        successContainer.appendChild(linkLabel);
+        successContainer.appendChild(linkInput);
+        successContainer.appendChild(buttonContainer);
+        successContainer.appendChild(emailForm);
+        successContainer.appendChild(uploadAnotherBtn);
+
+        section.appendChild(header);
+        section.appendChild(successContainer);
+
+        // Event handlers
+        linkInput.addEventListener('click', function() { this.select(); });
+
+        copyButton.addEventListener('click', function() {
+            navigator.clipboard.writeText(data.shareLink).then(() => {
+                copyButton.textContent = '✅ Copied!';
+                copyButton.disabled = true;
+                setTimeout(() => {
+                    copyButton.textContent = '📋 Copy to Clipboard';
+                    copyButton.disabled = false;
+                }, 2500);
+            }).catch(() => {
+                linkInput.select();
+                showAlert('Please copy manually');
+            });
+        });
+
+        emailButton.addEventListener('click', function() {
+            emailForm.style.display = emailForm.style.display === 'none' ? 'block' : 'none';
+            if (emailForm.style.display === 'block') {
+                emailForm.querySelector('.email-recipient-input').focus();
+            }
+        });
+
+        uploadAnotherBtn.addEventListener('click', function() {
+            isUploading = false;
+            sectionExists = false;
+            section.remove();
+            attemptInjection();
+        });
+
+        return section;
+    }
+
+    /**
      * Show success message with share link (XSS-safe DOM manipulation)
      */
     function showSuccess(button, data) {
-        // isUploading stays true to prevent re-injection
         console.log('[ExternalShare] showSuccess called, isUploading =', isUploading);
 
-        const resultDiv = button.parentElement.querySelector('.external-share-result');
         const fileName = button.getAttribute('data-file-name');
 
+        // Try to find resultDiv from button, or find section in DOM
+        let resultDiv = button.parentElement?.querySelector('.external-share-result');
+        let section = button.closest('.external-share-section');
+
+        // If button is detached, find section in DOM
+        if (!resultDiv || !document.contains(button)) {
+            console.log('[ExternalShare] Button detached from DOM, finding section...');
+            const sidebar = document.querySelector('#app-sidebar-vue.app-sidebar');
+            const contentArea = sidebar?.querySelector('.app-sidebar-tabs__content');
+            section = contentArea?.querySelector('.external-share-section');
+
+            if (!section) {
+                // Section was removed, create success section directly
+                console.log('[ExternalShare] Section removed, creating success section');
+                if (contentArea) {
+                    section = createSuccessSection(fileName, data);
+                    if (contentArea.firstChild) {
+                        contentArea.insertBefore(section, contentArea.firstChild);
+                    } else {
+                        contentArea.appendChild(section);
+                    }
+                    sectionExists = true;
+                    return;
+                } else {
+                    console.error('[ExternalShare] Cannot find contentArea');
+                    isUploading = false;
+                    return;
+                }
+            }
+            resultDiv = section.querySelector('.external-share-result');
+        }
+
         if (!resultDiv) {
-            console.error('[ExternalShare] resultDiv not found! Button parent:', button.parentElement);
+            console.error('[ExternalShare] resultDiv not found!');
             isUploading = false;
             return;
         }
 
-        // Clear previous content
+        // Hide upload button if it exists
+        const uploadBtn = section?.querySelector('.external-share-upload');
+        if (uploadBtn) {
+            uploadBtn.style.display = 'none';
+        }
+
+        // Clear and populate resultDiv
         resultDiv.textContent = '';
 
         // Create success container
