@@ -1,0 +1,28 @@
+{
+    "translations": {
+        "External Share": "External Share",
+        "Upload files to external services via sharing panel": "Upload files to external services via sharing panel",
+        "Add external upload option to file sharing panels. Users will see \"External Share\" section when sharing files.": "Add external upload option to file sharing panels. Users will see \"External Share\" section when sharing files.",
+        "Upload Service URL": "Upload Service URL",
+        "URL where files will be uploaded (e.g., transfer.sh, 0x0.st)": "URL where files will be uploaded (e.g., transfer.sh, 0x0.st)",
+        "Authentication Token (Optional)": "Authentication Token (Optional)",
+        "Will be sent as Authorization: Bearer [token] header": "Will be sent as Authorization: Bearer [token] header",
+        "Custom Headers (Optional)": "Custom Headers (Optional)",
+        "One header per line, format: Header-Name: value": "One header per line, format: Header-Name: value",
+        "Save Settings": "Save Settings",
+        "How to use": "How to use",
+        "Select any file in Files app": "Select any file in Files app",
+        "Click the share icon to open sharing panel": "Click the share icon to open sharing panel",
+        "Find \"External Share\" section in the sharing panel": "Find \"External Share\" section in the sharing panel",
+        "Click \"Upload\" to get a shareable link": "Click \"Upload\" to get a shareable link",
+        "%s shared a file with you": "%s shared a file with you",
+        "File Shared With You": "File Shared With You",
+        "%s has shared a file with you:": "%s has shared a file with you:",
+        "Download File": "Download File",
+        "Or copy this link:": "Or copy this link:",
+        "Message:": "Message:",
+        "Download link:": "Download link:",
+        "Email sent successfully to %s": "Email sent successfully to %s"
+    },
+    "pluralForm": "nplurals=2; plural=(n != 1);"
+}

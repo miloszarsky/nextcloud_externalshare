@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+    <id>externalshare</id>
+    <name>External Share</name>
+    <summary>Upload files to external services via sharing panel</summary>
+    <description>Adds external file upload option to sharing panels. Upload files to services like transfer.sh and get shareable links.</description>
+    <version>1.0.0</version>
+    <licence>agpl</licence>
+    <author mail="milos.zarsky@gmail.com" homepage="https://rootik.cz">Milos Zarsky</author>
+    <namespace>ExternalShare</namespace>
+    <category>files</category>
+    <bugs>https://github.com/miloszarsky/nextcloud_externalshare</bugs>
+    <dependencies>
+        <nextcloud min-version="30" max-version="40"/>
+    </dependencies>
+    <settings>
+        <admin>OCA\ExternalShare\Settings\AdminSettings</admin>
+    </settings>
+</info>

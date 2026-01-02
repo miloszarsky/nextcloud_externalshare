@@ -1,0 +1,375 @@
+/* External Share Section in Sharing Panel */
+.app-sidebar .external-share-section,
+#app-sidebar-vue .external-share-section {
+    display: block;
+    margin: 20px 16px;
+    padding: 20px;
+    border: 2px solid var(--color-primary);
+    border-radius: var(--border-radius-large);
+    background: var(--color-background-hover);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.external-share-header h3 {
+    margin: 0 0 8px 0;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.external-share-header p {
+    margin: 0;
+    color: var(--color-text-lighter);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.external-share-header p strong {
+    color: var(--color-main-text);
+    font-weight: 600;
+}
+
+.external-share-upload {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--color-primary);
+    color: var(--color-primary-text);
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 16px;
+    transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.external-share-upload:hover:not(:disabled) {
+    background: var(--color-primary-element-hover);
+}
+
+.external-share-upload:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.external-share-result {
+    margin-top: 16px;
+}
+
+/* Success message styling */
+.external-share-success {
+    padding: 16px;
+    background: var(--color-success);
+    border: 1px solid var(--color-success);
+    border-radius: var(--border-radius);
+    color: var(--color-primary-text);
+}
+
+.external-share-success h4 {
+    margin: 0 0 12px 0;
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-primary-text);
+}
+
+.external-share-success label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--color-primary-text);
+}
+
+.external-share-link-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--border-radius);
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--color-main-text);
+    margin-bottom: 8px;
+}
+
+.copy-link-btn {
+    width: 100%;
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--color-primary-text);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+.copy-link-btn:hover:not(:disabled) {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.copy-link-btn:disabled {
+    opacity: 0.8;
+}
+
+/* Icon */
+.icon-external {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyLjUgNy41SDE2LjI1TDEyLjUgMy43NVY3LjVaIiBmaWxsPSJjdXJyZW50Q29sb3IiLz4KPHBhdGggZD0iTTEyLjUgMTEuMjVWNy41SDE2LjI1TDE3LjUgOC43NVYxMy43NUg2LjI1VjExLjI1SDEyLjVaIiBmaWxsPSJjdXJyZW50Q29sb3IiLz4KPHBhdGggZD0iTTEuMjUgMTEuMjVMNS4wIDcuNVYxMS4yNUgxLjI1WiIgZmlsbD0iY3VycmVudENvbG9yIi8+CjxwYXRoIGQ9Ik0xLjI1IDExLjI1SDYuMjVWMTMuNzVIMS4yNVYxMS4yNVoiIGZpbGw9ImN1cnJlbnRDb2xvciIvPgo8L3N2Zz4K');
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Dialog styles */
+.external-share-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.external-share-dialog-content {
+    background: var(--color-main-background);
+    padding: 24px;
+    border-radius: var(--border-radius-large);
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.external-share-dialog h3 {
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-main-text);
+}
+
+.external-share-dialog p {
+    margin: 0 0 20px 0;
+    color: var(--color-text-lighter);
+}
+
+.external-share-dialog p strong {
+    color: var(--color-main-text);
+    font-weight: 600;
+}
+
+.external-share-dialog-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.external-share-dialog button {
+    padding: 10px 16px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+.external-share-dialog .upload-btn {
+    background: var(--color-primary);
+    color: var(--color-primary-text);
+    border: none;
+}
+
+.external-share-dialog .upload-btn:hover:not(:disabled) {
+    background: var(--color-primary-element-hover);
+}
+
+.external-share-dialog .upload-btn:disabled {
+    opacity: 0.6;
+}
+
+.external-share-dialog .cancel-btn {
+    background: var(--color-background-dark);
+    color: var(--color-main-text);
+    border: 1px solid var(--color-border);
+}
+
+.external-share-dialog .cancel-btn:hover {
+    background: var(--color-background-hover);
+}
+
+.dialog-result {
+    margin-top: 16px;
+}
+
+.dialog-success {
+    padding: 12px;
+    background: var(--color-success);
+    border: 1px solid var(--color-success);
+    border-radius: var(--border-radius);
+    color: var(--color-primary-text);
+}
+
+.dialog-success h4 {
+    margin: 0 0 8px 0;
+    color: var(--color-primary-text);
+}
+
+.dialog-link-input {
+    width: 100%;
+    padding: 8px;
+    margin: 4px 0;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--border-radius);
+    color: var(--color-main-text);
+}
+
+.dialog-copy-btn {
+    width: 100%;
+    margin-top: 8px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--color-primary-text);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s ease;
+}
+
+.dialog-copy-btn:hover:not(:disabled) {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.dialog-copy-btn:disabled {
+    opacity: 0.8;
+}
+
+/* Button containers */
+.external-share-buttons,
+.dialog-button-container {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.external-share-buttons button,
+.dialog-button-container button {
+    flex: 1;
+}
+
+/* Email button */
+.email-link-btn,
+.dialog-email-btn {
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--color-primary-text);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+.email-link-btn:hover:not(:disabled),
+.dialog-email-btn:hover:not(:disabled) {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Email form */
+.external-share-email-form {
+    margin-top: 16px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.email-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--color-main-text);
+}
+
+.email-recipient-input,
+.email-message-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    background: var(--color-main-background);
+    color: var(--color-main-text);
+    margin-bottom: 12px;
+    box-sizing: border-box;
+}
+
+.email-recipient-input:focus,
+.email-message-input:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 130, 201, 0.2);
+}
+
+.email-message-input {
+    resize: vertical;
+    min-height: 60px;
+    font-family: inherit;
+}
+
+.send-email-btn {
+    width: 100%;
+    padding: 10px 16px;
+    background: var(--color-primary);
+    color: var(--color-primary-text);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.send-email-btn:hover:not(:disabled) {
+    background: var(--color-primary-element-hover);
+}
+
+.send-email-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Email status messages */
+.email-status {
+    margin-top: 12px;
+    padding: 10px;
+    border-radius: var(--border-radius);
+    font-size: 13px;
+    text-align: center;
+}
+
+.email-status:empty {
+    display: none;
+}
+
+.email-status.success {
+    background: var(--color-success);
+    color: var(--color-primary-text);
+}
+
+.email-status.error {
+    background: var(--color-error);
+    color: var(--color-primary-text);
+}
