@@ -93,18 +93,9 @@
         // Check if we already have a section
         const existingSection = contentArea.querySelector('.external-share-section');
 
-        console.log('[ExternalShare] attemptInjection:', {
-            existingSection: !!existingSection,
-            sectionExists,
-            isUploading,
-            successShown,
-            currentFileName
-        });
-
         if (existingSection) {
             // Check if file changed - if so, remove old section and re-inject
             const existingFileName = existingSection.querySelector('.external-share-upload, button[data-file-name]')?.getAttribute('data-file-name');
-            console.log('[ExternalShare] existingFileName:', existingFileName);
 
             if (existingFileName && currentFileName && existingFileName !== currentFileName) {
                 console.log('[ExternalShare] File changed from', existingFileName, 'to', currentFileName);
@@ -115,12 +106,10 @@
                 lastSuccessData = null;
             } else {
                 // Same file, section exists - don't re-inject
-                console.log('[ExternalShare] Skipping injection - section exists');
                 return true;
             }
         } else if (successShown && lastSuccessData) {
             // Section was removed by Vue but we had a successful upload - recreate success section
-            console.log('[ExternalShare] Recreating success section');
             const section = createSuccessSection(lastSuccessData.fileName, lastSuccessData);
             if (contentArea.firstChild) {
                 contentArea.insertBefore(section, contentArea.firstChild);
@@ -131,7 +120,6 @@
             return true;
         } else if (isUploading) {
             // Upload in progress, don't create new section
-            console.log('[ExternalShare] Upload in progress, not injecting');
             return true;
         }
 
@@ -266,13 +254,10 @@
 
         // Bind event handler
         button.addEventListener('click', function(e) {
-            console.log('[ExternalShare] Upload button clicked');
             e.preventDefault();
             e.stopPropagation();
             handleUpload(button);
         });
-
-        console.log('[ExternalShare] Section injected for file:', fileName, 'path:', filePath);
     }
 
     function getFileName() {
@@ -349,10 +334,7 @@
         const filePath = button.getAttribute('data-file-path');
         const fileName = button.getAttribute('data-file-name');
 
-        console.log('[ExternalShare] handleUpload called', { filePath, fileName });
-
         if (!filePath || !fileName) {
-            console.error('[ExternalShare] Missing filePath or fileName');
             showAlert('Could not determine which file to upload. Please try again.');
             return;
         }
@@ -369,7 +351,6 @@
         formData.append('filePath', filePath);
 
         const uploadUrl = OC.generateUrl('/apps/externalshare/upload');
-        console.log('[ExternalShare] Calling API:', uploadUrl, 'Token:', OC.requestToken ? 'present' : 'missing');
 
         fetch(uploadUrl, {
             method: 'POST',
@@ -380,11 +361,8 @@
             body: formData
         })
         .then(response => {
-            console.log('[ExternalShare] Response status:', response.status);
             if (!response.ok) {
-                // Try to get error details
                 return response.json().then(data => {
-                    console.error('[ExternalShare] Server error:', data);
                     throw new Error(data.message || `HTTP ${response.status}`);
                 }).catch(() => {
                     throw new Error(`HTTP ${response.status}`);
@@ -393,8 +371,6 @@
             return response.json();
         })
         .then(data => {
-            console.log('[ExternalShare] Response data:', data);
-            // Validate response structure
             if (!data || typeof data !== 'object') {
                 throw new Error('Invalid response format');
             }
@@ -403,16 +379,14 @@
                 showSuccess(button, data);
             } else {
                 const errorMessage = data.message || 'Unknown error occurred';
-                console.error('[ExternalShare] Upload failed:', errorMessage);
                 showAlert('Upload failed: ' + errorMessage);
-                isUploading = false;  // Reset on failure
+                isUploading = false;
                 resetButton(button, originalText);
             }
         })
         .catch(error => {
-            console.error('[ExternalShare] Error:', error);
-            showAlert('Network error occurred. Please try again.');
-            isUploading = false;  // Reset on error
+            showAlert('Upload failed: ' + error.message);
+            isUploading = false;
             resetButton(button, originalText);
         });
     }
@@ -506,7 +480,6 @@
         emailButton.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('[ExternalShare] Email button clicked, form display:', emailForm.style.display);
             if (emailForm.style.display === 'none' || emailForm.style.display === '') {
                 emailForm.style.display = 'block';
                 const emailInput = emailForm.querySelector('.email-recipient-input');
@@ -523,14 +496,11 @@
      * Show success message with share link (XSS-safe DOM manipulation)
      */
     function showSuccess(button, data) {
-        console.log('[ExternalShare] showSuccess called, isUploading =', isUploading);
-
         const fileName = button.getAttribute('data-file-name');
 
-        // Mark success and store data for potential re-creation - do this FIRST
+        // Mark success and store data for potential re-creation
         successShown = true;
         lastSuccessData = { ...data, fileName };
-        console.log('[ExternalShare] Set successShown = true, lastSuccessData:', lastSuccessData);
 
         // Try to find resultDiv from button, or find section in DOM
         let resultDiv = button.parentElement?.querySelector('.external-share-result');
@@ -538,14 +508,12 @@
 
         // If button is detached, find section in DOM
         if (!resultDiv || !document.contains(button)) {
-            console.log('[ExternalShare] Button detached from DOM, finding section...');
             const sidebar = document.querySelector('#app-sidebar-vue.app-sidebar');
             const contentArea = sidebar?.querySelector('.app-sidebar-tabs__content');
             section = contentArea?.querySelector('.external-share-section');
 
             if (!section) {
                 // Section was removed, create success section directly
-                console.log('[ExternalShare] Section removed, creating success section');
                 if (contentArea) {
                     section = createSuccessSection(fileName, data);
                     if (contentArea.firstChild) {
@@ -556,7 +524,6 @@
                     sectionExists = true;
                     return;
                 } else {
-                    console.error('[ExternalShare] Cannot find contentArea');
                     successShown = false;
                     lastSuccessData = null;
                     isUploading = false;
@@ -567,7 +534,6 @@
         }
 
         if (!resultDiv) {
-            console.error('[ExternalShare] resultDiv not found!');
             successShown = false;
             lastSuccessData = null;
             isUploading = false;
@@ -671,7 +637,6 @@
         emailButton.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('[ExternalShare] Email button clicked, form display:', emailForm.style.display);
             if (emailForm.style.display === 'none' || emailForm.style.display === '') {
                 emailForm.style.display = 'block';
                 const emailInput = emailForm.querySelector('.email-recipient-input');
