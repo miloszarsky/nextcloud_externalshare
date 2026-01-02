@@ -39,11 +39,12 @@
 
         // Set up MutationObserver for Vue updates
         const observer = new MutationObserver(function(mutations) {
-            // Don't re-inject if upload in progress or section exists
-            if (isProcessing || sectionExists || isUploading) return;
+            // Skip if currently processing a click
+            if (isProcessing) return;
 
             for (const mutation of mutations) {
                 if (mutation.addedNodes.length || mutation.attributeName === 'class') {
+                    // Let attemptInjection handle file change detection
                     attemptInjection();
                     break;
                 }
@@ -70,8 +71,6 @@
     }
 
     function attemptInjection() {
-        if (sectionExists) return;
-
         // Target the Vue sidebar specifically
         const sidebar = document.querySelector('#app-sidebar-vue.app-sidebar');
 
@@ -86,31 +85,38 @@
             return false;
         }
 
-        // Check if we already injected
+        // Get current file info
+        const currentFileName = getFileName();
+
+        // Check if we already have a section
         const existingSection = contentArea.querySelector('.external-share-section');
         if (existingSection) {
             // Check if file changed - if so, remove old section and re-inject
-            const existingFileName = existingSection.querySelector('button')?.getAttribute('data-file-name');
-            const currentFileName = getFileName();
+            const existingFileName = existingSection.querySelector('.external-share-upload, button[data-file-name]')?.getAttribute('data-file-name');
+
             if (existingFileName && currentFileName && existingFileName !== currentFileName) {
+                console.log('[ExternalShare] File changed from', existingFileName, 'to', currentFileName);
                 existingSection.remove();
                 sectionExists = false;
-            } else {
-                sectionExists = true;
+                isUploading = false;  // Reset upload state for new file
+            } else if (sectionExists || isUploading) {
+                // Same file, section exists or upload in progress - don't re-inject
                 return true;
             }
+        } else if (sectionExists || isUploading) {
+            // No section but flags say we have one - reset flags
+            sectionExists = false;
+            // Don't reset isUploading here, only on file change
         }
 
-        // Get file info
-        const fileName = getFileName();
-        const filePath = getFilePath(fileName);
-
-        if (!fileName) {
+        if (!currentFileName) {
             return false;
         }
 
+        const filePath = getFilePath(currentFileName);
+
         // Inject our section
-        injectExternalShare(contentArea, fileName, filePath);
+        injectExternalShare(contentArea, currentFileName, filePath);
         return true;
     }
 
