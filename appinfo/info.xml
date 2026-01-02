@@ -6,7 +6,7 @@
     <summary>Upload files to external services via sharing panel</summary>
     <description>Adds external file upload option to sharing panels. Upload files to services like transfer.sh and get shareable links.</description>
     <version>1.1.0</version>
-    <licence>agpl</licence>
+    <licence>apache</licence>
     <author mail="milos.zarsky@gmail.com" homepage="https://rootik.cz">Milos Zarsky</author>
     <namespace>ExternalShare</namespace>
     <category>files</category>

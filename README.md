@@ -1,6 +1,6 @@
 # External Share for Nextcloud
 
-Upload files to external services (like transfer.sh, 0x0.st) directly from Nextcloud's sharing panel and get shareable links.
+Upload files to external services (like [transfer.sh](https://github.com/dutchcoders/transfer.sh), [0x0](https://github.com/olavfosse/0x0)) directly from Nextcloud's sharing panel and get shareable links.
 
 ## Features
 
@@ -55,7 +55,7 @@ Upload files to external services (like transfer.sh, 0x0.st) directly from Nextc
 
 ### Example Configurations
 
-**transfer.sh:**
+**[transfer.sh](https://github.com/dutchcoders/transfer.sh):**
 - URL: `https://transfer.sh`
 - Method: PUT
 - Custom Headers:
@@ -64,7 +64,7 @@ Upload files to external services (like transfer.sh, 0x0.st) directly from Nextc
   Max-Downloads: 10
   ```
 
-**0x0.st:**
+**[0x0](https://github.com/olavfosse/0x0):**
 - URL: `https://0x0.st`
 - Method: POST
 
@@ -78,8 +78,4 @@ Upload files to external services (like transfer.sh, 0x0.st) directly from Nextc
 
 ## License
 
-AGPL-3.0 - See [LICENSE](LICENSE) for details.
-
-## Author
-
-Milos Zarsky - [rootik.cz](https://rootik.cz)
+Apache License 2.0 - See [LICENSE](LICENSE) for details.
