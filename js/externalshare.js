@@ -10,6 +10,8 @@
     let isProcessing = false;
     let sectionExists = false;
     let isUploading = false;      // Prevents re-injection during upload
+    let successShown = false;     // Prevents re-injection after success
+    let lastSuccessData = null;   // Store success data for re-creation
     let storedFileContext = null;
 
     // Wait for page load
@@ -95,6 +97,7 @@
             existingSection: !!existingSection,
             sectionExists,
             isUploading,
+            successShown,
             currentFileName
         });
 
@@ -107,21 +110,29 @@
                 console.log('[ExternalShare] File changed from', existingFileName, 'to', currentFileName);
                 existingSection.remove();
                 sectionExists = false;
-                isUploading = false;  // Reset upload state for new file
-            } else if (sectionExists || isUploading) {
-                // Same file, section exists or upload in progress - don't re-inject
-                console.log('[ExternalShare] Skipping injection - section exists or uploading');
+                isUploading = false;
+                successShown = false;
+                lastSuccessData = null;
+            } else {
+                // Same file, section exists - don't re-inject
+                console.log('[ExternalShare] Skipping injection - section exists');
                 return true;
             }
-        } else if (sectionExists || isUploading) {
-            // No section in DOM but flags say we should have one
-            console.log('[ExternalShare] No section in DOM but flags set - checking if upload in progress');
-            if (isUploading) {
-                // Upload in progress, don't create new section
-                console.log('[ExternalShare] Upload in progress, not injecting');
-                return true;
+        } else if (successShown && lastSuccessData) {
+            // Section was removed by Vue but we had a successful upload - recreate success section
+            console.log('[ExternalShare] Recreating success section');
+            const section = createSuccessSection(lastSuccessData.fileName, lastSuccessData);
+            if (contentArea.firstChild) {
+                contentArea.insertBefore(section, contentArea.firstChild);
+            } else {
+                contentArea.appendChild(section);
             }
-            sectionExists = false;
+            sectionExists = true;
+            return true;
+        } else if (isUploading) {
+            // Upload in progress, don't create new section
+            console.log('[ExternalShare] Upload in progress, not injecting');
+            return true;
         }
 
         if (!currentFileName) {
@@ -155,7 +166,9 @@
             if (target && !isProcessing) {
                 isProcessing = true;
                 sectionExists = false;
-                isUploading = false;  // Reset on new file selection
+                isUploading = false;
+                successShown = false;  // Reset on new file selection
+                lastSuccessData = null;
                 storeFileContextFromClick(target);
 
                 // Remove existing section so it can be re-created with new file info
@@ -508,6 +521,10 @@
         console.log('[ExternalShare] showSuccess called, isUploading =', isUploading);
 
         const fileName = button.getAttribute('data-file-name');
+
+        // Mark success and store data for potential re-creation
+        successShown = true;
+        lastSuccessData = { ...data, fileName };
 
         // Try to find resultDiv from button, or find section in DOM
         let resultDiv = button.parentElement?.querySelector('.external-share-result');
@@ -978,6 +995,8 @@
             sectionExists = false;
             isProcessing = false;
             isUploading = false;
+            successShown = false;
+            lastSuccessData = null;
             storedFileContext = null;
             document.querySelectorAll('.external-share-section').forEach(el => el.remove());
             console.log('[ExternalShare] Reset complete');
