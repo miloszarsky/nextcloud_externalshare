@@ -459,16 +459,11 @@
 
         const emailForm = createEmailForm(data.shareLink, fileName);
 
-        const uploadAnotherBtn = document.createElement('button');
-        uploadAnotherBtn.className = 'upload-another-btn';
-        uploadAnotherBtn.textContent = '🔄 Upload Another File';
-
         successContainer.appendChild(successHeader);
         successContainer.appendChild(linkLabel);
         successContainer.appendChild(linkInput);
         successContainer.appendChild(buttonContainer);
         successContainer.appendChild(emailForm);
-        successContainer.appendChild(uploadAnotherBtn);
 
         section.appendChild(header);
         section.appendChild(successContainer);
@@ -490,18 +485,17 @@
             });
         });
 
-        emailButton.addEventListener('click', function() {
-            emailForm.style.display = emailForm.style.display === 'none' ? 'block' : 'none';
-            if (emailForm.style.display === 'block') {
-                emailForm.querySelector('.email-recipient-input').focus();
+        emailButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('[ExternalShare] Email button clicked, form display:', emailForm.style.display);
+            if (emailForm.style.display === 'none' || emailForm.style.display === '') {
+                emailForm.style.display = 'block';
+                const emailInput = emailForm.querySelector('.email-recipient-input');
+                if (emailInput) emailInput.focus();
+            } else {
+                emailForm.style.display = 'none';
             }
-        });
-
-        uploadAnotherBtn.addEventListener('click', function() {
-            isUploading = false;
-            sectionExists = false;
-            section.remove();
-            attemptInjection();
         });
 
         return section;
@@ -607,18 +601,12 @@
         // Create email form (initially hidden)
         const emailForm = createEmailForm(data.shareLink, fileName);
 
-        // Create "Upload Another" button
-        const uploadAnotherBtn = document.createElement('button');
-        uploadAnotherBtn.className = 'upload-another-btn';
-        uploadAnotherBtn.textContent = '🔄 Upload Another File';
-
         // Assemble success container
         successContainer.appendChild(successHeader);
         successContainer.appendChild(linkLabel);
         successContainer.appendChild(linkInput);
         successContainer.appendChild(buttonContainer);
         successContainer.appendChild(emailForm);
-        successContainer.appendChild(uploadAnotherBtn);
 
         resultDiv.appendChild(successContainer);
 
@@ -653,21 +641,17 @@
         });
 
         // Email button handler - toggle form visibility
-        emailButton.addEventListener('click', function() {
-            emailForm.style.display = emailForm.style.display === 'none' ? 'block' : 'none';
-            if (emailForm.style.display === 'block') {
-                emailForm.querySelector('.email-recipient-input').focus();
+        emailButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('[ExternalShare] Email button clicked, form display:', emailForm.style.display);
+            if (emailForm.style.display === 'none' || emailForm.style.display === '') {
+                emailForm.style.display = 'block';
+                const emailInput = emailForm.querySelector('.email-recipient-input');
+                if (emailInput) emailInput.focus();
+            } else {
+                emailForm.style.display = 'none';
             }
-        });
-
-        // Upload Another button handler - reset the section
-        uploadAnotherBtn.addEventListener('click', function() {
-            isUploading = false;  // Allow new upload
-            resultDiv.textContent = '';
-            button.style.display = '';
-            button.disabled = false;
-            button.textContent = '🚀 Upload to External Service';
-            button.style.opacity = '1';
         });
     }
 

@@ -385,21 +385,3 @@
     color: var(--color-primary-text);
 }
 
-/* Upload Another button */
-.upload-another-btn {
-    width: 100%;
-    margin-top: 12px;
-    padding: 8px 12px;
-    background: transparent;
-    color: var(--color-primary-text);
-    border: 1px dashed rgba(255, 255, 255, 0.5);
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-size: 13px;
-    transition: background 0.2s ease, border-color 0.2s ease;
-}
-
-.upload-another-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.8);
-}
